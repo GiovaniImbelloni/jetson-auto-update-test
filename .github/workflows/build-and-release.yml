@@ -23,18 +23,19 @@ jobs:
           make
 
       - name: Criar Release numerada
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: v${{ env.VERSION }}  # Gera releases numeradas (ex: v20250312123045)
-        files: servico_teste
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1  # Indentação corrigida
+        with:
+          tag_name: v${{ env.VERSION }}  # Gera releases numeradas (ex: v20250312123045)
+          files: servico_teste
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Criar Release "latest"
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: servico_teste-latest
-        files: servico_teste
-        make_latest: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1  # Indentação corrigida
+        with:
+          tag_name: servico_teste-latest
+          files: servico_teste
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
