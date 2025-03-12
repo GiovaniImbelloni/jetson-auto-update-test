@@ -1,0 +1,32 @@
+name: Build and Release ServicoTeste (ARM64)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Instalar dependências
+        run: sudo apt update && sudo apt install -y build-essential crossbuild-essential-arm64
+
+      - name: Compilar para ARM64
+        run: |
+          export CC=aarch64-linux-gnu-g++
+          make
+
+      - name: Criar Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: servico_teste-latest
+          files: servico_teste
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
