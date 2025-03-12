@@ -8,11 +8,28 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Usa o sistema normal para rodar o checkout
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout do código  # Agora o checkout acontece fora do container
+      - name: Checkout do código
         uses: actions/checkout@v3
+
+      - name: Obter última versão publicada
+        id: get_latest_version
+        run: |
+          latest_tag=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/GiovaniImbelloni/jetson-auto-update-test/releases/latest" | \
+            grep "tag_name" | cut -d '"' -f 4)
+
+          if [[ -z "$latest_tag" ]]; then
+            latest_tag="v1.0"
+          else
+            version_number=$(echo $latest_tag | sed 's/v//')
+            new_version=$(echo "$version_number + 0.1" | bc)
+            latest_tag="v$new_version"
+          fi
+
+          echo "VERSION=$latest_tag" >> $GITHUB_ENV
 
       - name: Rodar container compatível com a Jetson Nano
         run: |
@@ -25,13 +42,10 @@ jobs:
           make
           "
 
-      - name: Gerar número da versão
-        run: echo "VERSION=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
-
       - name: Criar Release numerada
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ env.VERSION }}
+          tag_name: ${{ env.VERSION }}
           files: servico_teste
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
