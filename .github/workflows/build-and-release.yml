@@ -8,18 +8,22 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04  # Agora usa a versão compatível com GLIBC 2.27
 
     steps:
       - name: Checkout do código
         uses: actions/checkout@v3
 
-      - name: Instalar dependências
-        run: sudo apt update && sudo apt install -y build-essential crossbuild-essential-arm64
-
-      - name: Compilar para ARM64
+      - name: Instalar dependências compatíveis com Jetson Nano
         run: |
-          export CC=aarch64-linux-gnu-g++
+          sudo apt update
+          sudo apt install -y build-essential gcc-8 g++-8
+          sudo apt install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+
+      - name: Compilar para ARM64 (GLIBC 2.27)
+        run: |
+          export CC=aarch64-linux-gnu-gcc-8
+          export CXX=aarch64-linux-gnu-g++-8
           make
 
       - name: Gerar número da versão
