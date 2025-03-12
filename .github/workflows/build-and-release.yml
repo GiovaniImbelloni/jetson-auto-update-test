@@ -22,20 +22,22 @@ jobs:
           export CC=aarch64-linux-gnu-g++
           make
 
+      - name: Gerar número da versão
+        run: echo "VERSION=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+
       - name: Criar Release numerada
-        uses: softprops/action-gh-release@v1  # Indentação corrigida
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ env.VERSION }}  # Gera releases numeradas (ex: v20250312123045)
+          tag_name: v${{ env.VERSION }}
           files: servico_teste
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Criar Release "latest"
-        uses: softprops/action-gh-release@v1  # Indentação corrigida
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: servico_teste-latest
           files: servico_teste
-          make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
