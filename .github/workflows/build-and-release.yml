@@ -17,16 +17,18 @@ jobs:
       - name: Obter última versão publicada
         id: get_latest_version
         run: |
+          SERVICE_NAME="servico_teste"
+          
           latest_tag=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/GiovaniImbelloni/jetson-auto-update-test/releases/latest" | \
-            grep "tag_name" | cut -d '"' -f 4)
+            "https://api.github.com/repos/GiovaniImbelloni/jetson-auto-update-test/releases" | \
+            grep "tag_name" | grep "$SERVICE_NAME" | head -n 1 | cut -d '"' -f 4)
 
           if [[ -z "$latest_tag" ]]; then
-            latest_tag="v1.0"
+            latest_tag="${SERVICE_NAME}_v1.0"
           else
-            version_number=$(echo $latest_tag | sed 's/v//')
+            version_number=$(echo $latest_tag | sed "s/${SERVICE_NAME}_v//")
             new_version=$(echo "$version_number + 0.1" | bc)
-            latest_tag="v$new_version"
+            latest_tag="${SERVICE_NAME}_v$new_version"
           fi
 
           echo "VERSION=$latest_tag" >> $GITHUB_ENV
@@ -42,7 +44,7 @@ jobs:
           make
           "
 
-      - name: Criar Release numerada
+      - name: Criar Release numerada para o serviço
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.VERSION }}
@@ -50,7 +52,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Criar Release "latest"
+      - name: Criar Release "latest" específica para o serviço
         uses: softprops/action-gh-release@v1
         with:
           tag_name: servico_teste-latest
