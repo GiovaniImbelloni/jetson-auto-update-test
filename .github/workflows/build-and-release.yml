@@ -8,26 +8,22 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Mantemos um runner atual, mas rodamos um container compatível
-
-    container:
-      image: ubuntu:18.04  # Agora usamos um container com Ubuntu 18.04
+    runs-on: ubuntu-latest  # Usa o sistema normal para rodar o checkout
 
     steps:
-      - name: Checkout do código
+      - name: Checkout do código  # Agora o checkout acontece fora do container
         uses: actions/checkout@v3
 
-      - name: Instalar dependências compatíveis com Jetson Nano
+      - name: Rodar container compatível com a Jetson Nano
         run: |
-          apt update
-          apt install -y build-essential gcc-8 g++-8
-          apt install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
-
-      - name: Compilar para ARM64 (GLIBC 2.27)
-        run: |
-          export CC=aarch64-linux-gnu-gcc-8
-          export CXX=aarch64-linux-gnu-g++-8
+          docker run --rm -v $(pwd):/src -w /src ubuntu:18.04 /bin/bash -c "
+          apt update &&
+          apt install -y build-essential gcc-8 g++-8 &&
+          apt install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu &&
+          export CC=aarch64-linux-gnu-gcc-8 &&
+          export CXX=aarch64-linux-gnu-g++-8 &&
           make
+          "
 
       - name: Gerar número da versão
         run: echo "VERSION=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
