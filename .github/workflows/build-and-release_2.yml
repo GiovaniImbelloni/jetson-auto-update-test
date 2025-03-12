@@ -17,7 +17,7 @@ jobs:
       - name: Obter última versão publicada
         id: get_latest_version
         run: |
-          SERVICE_NAME="servico_teste"
+          SERVICE_NAME="servico_teste_2"
           
           latest_tag=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/GiovaniImbelloni/jetson-auto-update-test/releases" | \
@@ -35,7 +35,7 @@ jobs:
 
       - name: Rodar container compatível com a Jetson Nano
         run: |
-          docker run --rm -v $(pwd)/servico_teste:/src -w /src ubuntu:18.04 /bin/bash -c "
+          docker run --rm -v $(pwd)/servico_teste_2:/src -w /src ubuntu:18.04 /bin/bash -c "
           apt update &&
           apt install -y build-essential gcc-8 g++-8 &&
           apt install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu &&
@@ -48,15 +48,15 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.VERSION }}
-          files: servico_teste
+          files: servico_teste_2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Criar Release "latest" específica para o serviço
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: servico_teste-latest
-          files: servico_teste
+          tag_name: servico_teste_2-latest
+          files: servico_teste_2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
