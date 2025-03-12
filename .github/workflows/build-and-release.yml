@@ -8,7 +8,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04  # Agora usa a versão compatível com GLIBC 2.27
+    runs-on: ubuntu-latest  # Mantemos um runner atual, mas rodamos um container compatível
+
+    container:
+      image: ubuntu:18.04  # Agora usamos um container com Ubuntu 18.04
 
     steps:
       - name: Checkout do código
@@ -16,9 +19,9 @@ jobs:
 
       - name: Instalar dependências compatíveis com Jetson Nano
         run: |
-          sudo apt update
-          sudo apt install -y build-essential gcc-8 g++-8
-          sudo apt install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          apt update
+          apt install -y build-essential gcc-8 g++-8
+          apt install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
 
       - name: Compilar para ARM64 (GLIBC 2.27)
         run: |
