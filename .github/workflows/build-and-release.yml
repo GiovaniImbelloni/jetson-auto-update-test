@@ -48,7 +48,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.VERSION }}
-          files: servico_teste
+          files: servico_teste/servico_teste
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -56,7 +56,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: servico_teste-latest
-          files: servico_teste
+          files: servico_teste/servico_teste
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
