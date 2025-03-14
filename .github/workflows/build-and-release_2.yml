@@ -57,6 +57,7 @@ jobs:
         with:
           tag_name: servico_teste_2-latest
           files: servico_teste_2/servico_teste_2
+          make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
